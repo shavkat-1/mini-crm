@@ -5,16 +5,21 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use App\Enums\TicketStatus;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
 
-class Ticket extends Model
+class Ticket extends Model implements HasMedia
 {
-    protected $fillable = ['customer_id', 'subject', 'message', 'status', 'answered_at'];
+    use InteractsWithMedia;
 
-    public function customer(): BelongsTo
-{
-    return $this->belongsTo(Customer::class);
-}
+    protected $fillable = [
+        'customer_id',
+        'subject',
+        'message',
+        'status',
+        'answered_at',
+    ];
 
 
 protected $casts = [
