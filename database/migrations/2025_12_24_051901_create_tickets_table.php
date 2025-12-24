@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('customer_id')->constrained()->cascadeOnDelete();
             $table->string('subject');
-            $table->text('message')->unique();
+            $table->text('message');
             $table->enum('status',['new', 'in_progress', 'processed'])->default('new');
              $table->timestamp('answered_at')->nullable();
             $table->timestamps();

@@ -12,8 +12,9 @@ class Customer extends Model
     protected $fillable = ['name', 'phone', 'email'];
 
 
-    public function tickets(){
-        return
-        $this->hasMany(Ticket::class);
-    }
+    public function tickets(): HasMany
+{
+    return $this->hasMany(Ticket::class);
+}
+
 }
