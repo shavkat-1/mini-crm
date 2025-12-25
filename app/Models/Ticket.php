@@ -27,5 +27,19 @@ protected $casts = [
     'answered_at' => 'datetime',
 ];
 
+public function scopeStatus($query, string $status)
+{
+    return $query->where('status', $status);
+}
 
+public function scopeLastDay($query)
+    {
+        return $query->where('created_at', '>=', now()->subDay());
+    }
+
+
+    public function scopeLastWeek($query)
+    {
+        return $query->where('created_at', '>=', now()->subWeek());
+    }
 }
