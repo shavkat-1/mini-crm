@@ -20,13 +20,15 @@ class TicketUpdateRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
-        return [
-            'customer_id' => 'sometimes|required|exists:customers,id',
-            'subject' => 'sometimes|required|string|max:255',
-            'message' => 'sometimes|required|string',
-            'status' => 'sometimes|in:new,in_progress,processed',
-            'answered_at' => 'sometimes|nullable|date',
-        ];
-    }
+{
+    return [
+        'customer_id' => 'required|exists:customers,id',
+        'subject' => 'required|string|max:255',
+        'message' => 'required|string',
+        'status' => 'nullable|in:new,in_progress,processed',
+        'answered_at' => 'nullable|date',
+        'files.*' => 'file|max:10240',
+    ];
+}
+
 }

@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Ticket;
 use App\Enums\TicketStatus;
+use App\Models\Customer;
 use App\Repositories\TicketRepository;
 use Illuminate\Database\Eloquent\Collection;
 
@@ -27,15 +28,16 @@ class TicketService
     }
 
     public function create(array $data, array $files = []): Ticket
-    {
-        $ticket = $this->repository->create($data);
+{
+    $ticket = $this->repository->create($data);
 
-        foreach ($files as $file) {
-            $ticket->addMedia($file)->toMediaCollection('files');
-        }
-
-        return $ticket;
+    foreach ($files as $file) {
+        $ticket->addMedia($file)->toMediaCollection('files');
     }
+
+    return $ticket->fresh();
+}
+
 
     public function update(Ticket $ticket, array $data, array $files = []): Ticket
     {

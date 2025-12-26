@@ -14,6 +14,8 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        User::truncate();
+
        // Создать роли
         Role::firstOrCreate(['name' => 'admin']);
         Role::firstOrCreate(['name' => 'manager']);

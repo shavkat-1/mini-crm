@@ -11,7 +11,7 @@ class TicketStoreRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -20,13 +20,16 @@ class TicketStoreRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
-    {
-        return [
-            'customer_id' => 'required|exists:customers,id',
-            'subject' => 'required|string|max:255',
-            'message' => 'required|string',
-            'status' => 'in:new,in_progress,processed',
-            'answered_at' => 'nullable|date',
+{
+    return [
+        'customer_id' => 'required|exists:customers,id',
+        'subject' => 'required|string|max:255',
+        'message' => 'required|string',
+        'status' => 'nullable|in:new,in_progress,processed',
+        'answered_at' => 'nullable|date',
+        'files.*' => 'file|max:10240',
         ];
     }
+
+
 }

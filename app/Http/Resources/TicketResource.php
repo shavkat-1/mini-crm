@@ -14,16 +14,16 @@ class TicketResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+       return [
             'id' => $this->id,
 
-            // Клиент
-            'customer' => [
+            // Клиент (безопасно)
+            'customer' => $this->customer ? [
                 'id' => $this->customer->id,
                 'name' => $this->customer->name,
                 'email' => $this->customer->email,
                 'phone' => $this->customer->phone,
-            ],
+            ] : null,
 
             // Данные заявки
             'subject' => $this->subject,
