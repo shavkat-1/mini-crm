@@ -8,6 +8,10 @@ use Illuminate\Support\Str;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
+ *
+ * @method $this admin()
+ * @method $this manager()
+ * @method $this user()
  */
 class UserFactory extends Factory
 {
@@ -40,5 +44,35 @@ class UserFactory extends Factory
         return $this->state(fn (array $attributes) => [
             'email_verified_at' => null,
         ]);
+    }
+
+    /**
+     * Создать пользователя с ролью админа
+     */
+    public function admin(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('admin');
+        });
+    }
+
+    /**
+     * Создать пользователя с ролью менеджера
+     */
+    public function manager(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('manager');
+        });
+    }
+
+    /**
+     * Создать пользователя с ролью пользователя
+     */
+    public function user(): static
+    {
+        return $this->afterCreating(function ($user) {
+            $user->assignRole('user');
+        });
     }
 }

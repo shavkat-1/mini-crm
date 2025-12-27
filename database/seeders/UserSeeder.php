@@ -3,9 +3,8 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\DB;
 
 class UserSeeder extends Seeder
 {
@@ -14,23 +13,29 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // Отключаем проверку внешних ключей
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        // Очищаем таблицы
         User::truncate();
+        DB::table('model_has_roles')->truncate();
+        DB::table('model_has_permissions')->truncate();
 
-       // Создать роли
-        Role::firstOrCreate(['name' => 'admin']);
-        Role::firstOrCreate(['name' => 'manager']);
+        // Включаем проверку обратно
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // Создать админа
-        $admin = User::factory()->create([
+        // Создать админа с использованием метода фабрики
+        User::factory()->admin()->create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
             'password' => bcrypt('password'),
         ]);
-        $admin->assignRole('admin');
 
-        // Создать менеджеров
-        User::factory(2)->create()->each(function ($user) {
-            $user->assignRole('manager');
-        });
+        // Создать менеджеров с использованием метода фабрики
+        User::factory(2)->manager()->create();
+
+        // Опционально: создать обычных пользователей
+        User::factory(5)->user()->create();
+
     }
 }
