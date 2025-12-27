@@ -20,6 +20,7 @@ class Ticket extends Model implements HasMedia
         'message',
         'status',
         'answered_at',
+        'manager_answer',
     ];
 
     public function customer()

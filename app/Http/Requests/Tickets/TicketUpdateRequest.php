@@ -26,6 +26,7 @@ class TicketUpdateRequest extends FormRequest
         'subject' => 'sometimes|string|max:255',
         'message' => 'sometimes|string',
         'status' => 'sometimes|in:new,in_progress,processed',
+        'manager_answer' => 'nullable|string',
         'answered_at' => 'sometimes|date',
         'files.*' => 'sometimes|max:10240',
     ];

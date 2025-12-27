@@ -27,16 +27,35 @@ class TicketService
         return $this->repository->find($id);
     }
 
+    public function query()
+    {
+        return $this->repository->query();
+    }
+
     public function create(array $data, array $files = []): Ticket
 {
+    // Проверяем, есть ли уже тикет сегодня от этого клиента
+    $todayTicket = Ticket::where('customer_id', $data['customer_id'])
+                         ->whereDate('created_at', now())
+                         ->first();
+
+    if ($todayTicket) {
+        throw \Illuminate\Validation\ValidationException::withMessages([
+            'customer_id' => ['От одного клиента можно создать только одну заявку в сутки.']
+        ]);
+    }
+
+    // Создаём тикет
     $ticket = $this->repository->create($data);
 
+    // Добавляем файлы через medialibrary
     foreach ($files as $file) {
         $ticket->addMedia($file)->toMediaCollection('files');
     }
 
     return $ticket->fresh();
 }
+
 
 
     public function update(Ticket $ticket, array $data, array $files = []): Ticket

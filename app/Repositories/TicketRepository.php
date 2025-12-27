@@ -22,6 +22,11 @@ class TicketRepository
         return $this->model->with('customer')->find($id);
     }
 
+    public function query()
+    {
+        return $this->model->with('customer', 'media');
+    }
+
     public function create(array $data): Ticket {
         return $this->model->create($data);
     }
@@ -34,9 +39,11 @@ class TicketRepository
         return $ticket->delete();
     }
 
-    public function ticketsByStatus(string $status)
-    {
-        return $this->model->with('customer')->status($status)->get();
-    }
+   public function ticketsByStatus(string $status, $paginate = false)
+{
+    $query = $this->model->with('customer')->where('status', $status);
+    return $paginate ? $query->paginate(20) : $query->get();
+}
+
 
 }
