@@ -22,7 +22,7 @@ class TicketStoreRequest extends FormRequest
     public function rules(): array
 {
     return [
-        'customer_id' => 'required|exists:customers,id',
+        'customer_id' => 'nullable|exists:customers,id',
         'subject' => 'required|string|max:255',
         'message' => 'required|string',
         'status' => 'nullable|in:new,in_progress,processed',

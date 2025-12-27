@@ -22,12 +22,12 @@ class TicketUpdateRequest extends FormRequest
     public function rules(): array
 {
     return [
-        'customer_id' => 'required|exists:customers,id',
-        'subject' => 'required|string|max:255',
-        'message' => 'required|string',
-        'status' => 'nullable|in:new,in_progress,processed',
-        'answered_at' => 'nullable|date',
-        'files.*' => 'file|max:10240',
+        'customer_id' => 'sometimes|exists:customers,id',
+        'subject' => 'sometimes|string|max:255',
+        'message' => 'sometimes|string',
+        'status' => 'sometimes|in:new,in_progress,processed',
+        'answered_at' => 'sometimes|date',
+        'files.*' => 'sometimes|max:10240',
     ];
 }
 
