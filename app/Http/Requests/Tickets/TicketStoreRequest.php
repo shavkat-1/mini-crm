@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Tickets;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class TicketStoreRequest extends FormRequest
 {
@@ -22,7 +23,16 @@ class TicketStoreRequest extends FormRequest
     public function rules(): array
 {
     return [
-        'customer_id' => 'nullable|exists:customers,id',
+        'customer_id' => [
+                'required',
+                'exists:customers,id',
+
+                Rule::unique('tickets')->where(function ($query) {
+                    return $query
+                        ->where('customer_id', $this->customer_id)
+                        ->whereDate('created_at', now()->toDateString());
+                }),
+            ],
         'subject' => 'required|string|max:255',
         'message' => 'required|string',
         'status' => 'nullable|in:new,in_progress,processed',
@@ -31,5 +41,11 @@ class TicketStoreRequest extends FormRequest
         ];
     }
 
+     public function messages(): array
+    {
+        return [
+            'customer_id.unique' => 'От одного клиента можно создать только одну заявку в сутки.',
+        ];
+    }
 
 }
