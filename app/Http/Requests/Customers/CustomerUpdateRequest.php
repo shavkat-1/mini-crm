@@ -23,8 +23,22 @@ class CustomerUpdateRequest extends FormRequest
     {
         return [
             'name' => 'sometimes|required|string|max:255',
-            'phone' => 'sometimes|required|string|unique:customers,phone,' . $this->customer->id,
+            'phone' => [
+            'sometimes',
+            'required',
+            'string',
+            'regex:/^\+[1-9]\d{1,14}$/',
+            'unique:customers,phone,' . $this->customer->id,
+            ],
             'email' => 'sometimes|nullable|string|email|max:255|unique:customers,email,' . $this->customer->id,
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+        'phone.regex' => 'Телефон должен быть в формате E.164, например +71234567890' . $this->customer->id,
+       ];
+    }
+
 }
