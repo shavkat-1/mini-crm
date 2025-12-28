@@ -16,11 +16,12 @@
 
 ## 4. Используемые технологии и библиотеки
 - Laravel 12, PHP 8.4
+- Laravel Brreze 
 - Spatie MediaLibrary (файлы)
 - Spatie Permission (роли)
 - Swagger (API документация)
 - Postman для тестирования
-- PSR-12, SOLID, KISS, DRY
+- PSR-12, SOLID
 
 ## 5. Особенности реализации
 - Вся логика через сервисы и репозитории
@@ -33,3 +34,4 @@
 composer install
 php artisan migrate --seed
 php artisan serve
+
