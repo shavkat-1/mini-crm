@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Web\Admin\TicketController;
 use App\Http\Controllers\Web\WidgetController;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Route;
 
 
@@ -11,6 +12,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
+    /** @var \App\Models\User|null $user */
     $user = auth()->user();
 
     // Редирект админов и менеджеров в админку

@@ -15,10 +15,12 @@
             <span class="font-bold text-lg">Админ-панель</span>
             <div>
                 <a href="{{ route('admin.tickets.index') }}" class="mr-4 hover:underline">Заявки</a>
-<form method="POST" action="{{ route('logout') }}">
-    @csrf
-    <button type="submit" class="mr-4 hover:underline">Выйти</button>
-</form>
+            </div>
+            <div>
+       <form method="POST" action="{{ route('logout') }}">
+       @csrf
+           <button type="submit" class="mr-4 hover:underline">Выйти</button>
+       </form>
 
             </div>
         </div>

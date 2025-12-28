@@ -1,0 +1,152 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Mini CRM API",
+        "description": "Документация API для работы с заявками",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://127.0.0.1:8000",
+            "description": "Local server"
+        }
+    ],
+    "paths": {
+        "/api/tickets": {
+            "post": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Создание заявки",
+                "operationId": "8848c51e296cdada9c13ea8ba293ea5b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/TicketStoreRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Заявка создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TicketResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации"
+                    }
+                }
+            }
+        },
+        "/api/tickets/statistics": {
+            "get": {
+                "tags": [
+                    "Tickets"
+                ],
+                "summary": "Статистика заявок",
+                "description": "Статистика заявок за сутки, неделю и месяц",
+                "operationId": "0dfc9a0d6a2ade6783ff537acebe4916",
+                "responses": {
+                    "200": {
+                        "description": "Успешный ответ",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "today": {
+                                            "type": "integer",
+                                            "example": 5
+                                        },
+                                        "week": {
+                                            "type": "integer",
+                                            "example": 32
+                                        },
+                                        "month": {
+                                            "type": "integer",
+                                            "example": 128
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "TicketStoreRequest": {
+                "required": [
+                    "customer_id",
+                    "subject",
+                    "message"
+                ],
+                "properties": {
+                    "customer_id": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "subject": {
+                        "type": "string",
+                        "example": "Проблема с заказом"
+                    },
+                    "message": {
+                        "type": "string",
+                        "example": "Не приходит подтверждение"
+                    }
+                },
+                "type": "object"
+            },
+            "TicketResponse": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "type": "string",
+                        "example": "new"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "example": "2025-12-27 12:00:00"
+                    }
+                },
+                "type": "object"
+            },
+            "TicketStatisticsResponse": {
+                "properties": {
+                    "today": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "week": {
+                        "type": "integer",
+                        "example": 32
+                    },
+                    "month": {
+                        "type": "integer",
+                        "example": 128
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Tickets",
+            "description": "Работа с заявками"
+        }
+    ]
+}

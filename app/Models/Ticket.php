@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Enums\TicketStatus;
+use Carbon\Carbon;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -40,14 +41,25 @@ public function scopeStatus($query, string $status)
     return $query->where('status', $status);
 }
 
-public function scopeLastDay($query)
+ public function scopeToday($query)
     {
-        return $query->where('created_at', '>=', now()->subDay());
+        return $query->whereDate('created_at', Carbon::today());
     }
 
-
-    public function scopeLastWeek($query)
+    // Текущая неделя
+    public function scopeThisWeek($query)
     {
-        return $query->where('created_at', '>=', now()->subWeek());
+        return $query->whereBetween('created_at', [
+            Carbon::now()->startOfWeek(),
+            Carbon::now()->endOfWeek(),
+        ]);
+    }
+
+    // Текущий месяц
+    public function scopeThisMonth($query)
+    {
+        return $query
+            ->whereYear('created_at', Carbon::now()->year)
+            ->whereMonth('created_at', Carbon::now()->month);
     }
 }
