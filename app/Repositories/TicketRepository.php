@@ -31,6 +31,7 @@ class TicketRepository
         return $this->model->create($data);
     }
 
+
     public function update(Ticket $ticket, array $data): bool {
         return $ticket->update($data);
     }
@@ -38,6 +39,14 @@ class TicketRepository
     public function delete(Ticket $ticket): bool {
         return $ticket->delete();
     }
+
+    public function existsTodayByCustomer(int $customerId): bool
+{
+    return $this->model
+        ->where('customer_id', $customerId)
+        ->whereDate('created_at', today())
+        ->exists();
+}
 
    public function ticketsByStatus(string $status, $paginate = false)
 {

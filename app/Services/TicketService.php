@@ -7,6 +7,7 @@ use App\Enums\TicketStatus;
 use App\Models\Customer;
 use App\Repositories\TicketRepository;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Validation\ValidationException;
 
 class TicketService
 {
@@ -34,28 +35,20 @@ class TicketService
 
     public function create(array $data, array $files = []): Ticket
 {
-    // Проверяем, есть ли уже тикет сегодня от этого клиента
-    $todayTicket = Ticket::where('customer_id', $data['customer_id'])
-                         ->whereDate('created_at', now())
-                         ->first();
-
-    if ($todayTicket) {
-        throw \Illuminate\Validation\ValidationException::withMessages([
+    if ($this->repository->existsTodayByCustomer($data['customer_id'])) {
+        throw ValidationException::withMessages([
             'customer_id' => ['От одного клиента можно создать только одну заявку в сутки.']
         ]);
     }
 
-    // Создаём тикет
     $ticket = $this->repository->create($data);
 
-    // Добавляем файлы через medialibrary
     foreach ($files as $file) {
         $ticket->addMedia($file)->toMediaCollection('files');
     }
 
     return $ticket->fresh();
 }
-
 
 
     public function update(Ticket $ticket, array $data, array $files = []): Ticket
