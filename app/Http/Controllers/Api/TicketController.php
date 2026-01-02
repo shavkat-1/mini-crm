@@ -9,6 +9,7 @@ use App\Http\Resources\TicketStatisticsResource;
 use App\Services\TicketService;
 use Illuminate\Http\JsonResponse;
 
+
 class TicketController extends Controller
 {
     public function __construct(
