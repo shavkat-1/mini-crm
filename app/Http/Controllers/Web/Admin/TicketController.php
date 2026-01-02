@@ -4,89 +4,81 @@ namespace App\Http\Controllers\Web\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Services\TicketService;
-use App\Http\Requests\Tickets\TicketStoreRequest;
 use App\Http\Requests\Tickets\TicketUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 class TicketController extends Controller
 {
-    protected TicketService $ticketService;
+    public function __construct(
+        private TicketService $ticketService
+    ) {}
 
-    public function __construct(TicketService $ticketService)
-    {
-        $this->ticketService = $ticketService;
-    }
-
-
+    /**
+     * Список заявок с фильтрацией
+     */
     public function index(): View
-{
-    $query = $this->ticketService->query();
+    {
+        $tickets = $this->ticketService->getFilteredTickets(
+            status: request('status'),
+            email: request('email'),
+            phone: request('phone'),
+            from: request('from'),
+            to: request('to')
+        );
 
-    if ($status = request('status')) {
-        $query->where('status', $status);
+        return view('admin.tickets.index', compact('tickets'));
     }
 
-    if ($email = request('email')) {
-        $query->whereHas('customer', fn($q) => $q->where('email', 'like', "%{$email}%"));
-    }
-
-    if ($phone = request('phone')) {
-        $query->whereHas('customer', fn($q) => $q->where('phone', 'like', "%{$phone}%"));
-    }
-
-    if ($from = request('from')) {
-        $query->whereDate('created_at', '>=', $from);
-    }
-
-    if ($to = request('to')) {
-        $query->whereDate('created_at', '<=', $to);
-    }
-
-    $tickets = $query->paginate(20);
-
-    return view('admin.tickets.index', compact('tickets'));
-}
-
-
+    /**
+     * Просмотр заявки
+     */
     public function show(int $id): View
     {
         $ticket = $this->ticketService->find($id);
+
+        if (!$ticket) {
+            abort(404, 'Заявка не найдена');
+        }
+
         return view('admin.tickets.show', compact('ticket'));
     }
 
-
+    /**
+     * Форма редактирования заявки
+     */
     public function edit(int $id): View
     {
         $ticket = $this->ticketService->find($id);
+
+        if (!$ticket) {
+            abort(404, 'Заявка не найдена');
+        }
+
         return view('admin.tickets.edit', compact('ticket'));
     }
 
-
+    /**
+     * Обновление заявки (ответ менеджера)
+     */
     public function update(TicketUpdateRequest $request, int $id): RedirectResponse
-{
-    $ticket = $this->ticketService->find($id);
+    {
+        $ticket = $this->ticketService->answerTicket($id, $request->validated());
 
-    $data = $request->validated();
-
-    if (!empty($data['manager_answer'])) {
-        $data['status'] = 'processed';
-        $data['answered_at'] = now();
+        return redirect()
+            ->route('admin.tickets.show', $ticket->id)
+            ->with('success', 'Ответ успешно отправлен');
     }
 
-    $this->ticketService->update($ticket, $data);
-
-    return redirect()
-        ->route('admin.tickets.show', $ticket->id)
-        ->with('success', 'Ответ отправлен');
-}
-
-
+    /**
+     * Удаление заявки
+     */
     public function destroy(int $id): RedirectResponse
     {
-        $ticket = $this->ticketService->find($id);
-        $this->ticketService->delete($ticket);
-        return redirect()->route('tickets.index')
-            ->with('success', 'Тикет успешно удален');
+        $this->ticketService->delete($id);
+
+        return redirect()
+            ->route('admin.tickets.index')
+            ->with('success', 'Заявка успешно удалена');
     }
 }
